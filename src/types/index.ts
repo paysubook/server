@@ -1,14 +1,16 @@
-export enum TransactionType {
-  Expense = 'expense',
-  Income = 'income',
-}
+export type TransactionType = 'expense' | 'income';
 
-export enum PaymentMethod {
-  Cash = 'cash',
-  Card = 'card',
-}
+export type PaymentMethod = 'cash' | 'card';
 
 export enum GenderCode {
   M = 'm',
   F = 'f',
+}
+
+export interface ExpenseRecordBody {
+  type: TransactionType;
+  paymentMethod: PaymentMethod;
+  category: string;
+  amount: string;
+  description: string;
 }
