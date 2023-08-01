@@ -2,12 +2,20 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { PaymentMethod, TransactionType } from 'src/types';
 
-@Schema()
+export type ExpenseRecordDocument = ExpenseRecord & Document;
+
+@Schema({
+  timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
+  versionKey: false,
+})
 export class ExpenseRecord extends Document {
-  @Prop({ required: true, enum: TransactionType })
+  @Prop()
+  userId: string;
+
+  @Prop({ required: true })
   type: TransactionType;
 
-  @Prop({ required: true, enum: PaymentMethod })
+  @Prop({ required: true })
   paymentMethod: PaymentMethod;
 
   @Prop({ required: true })
