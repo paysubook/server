@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './modules/auth.module';
 import { ExpenseRecordModule } from './modules/expenseRecord.module';
 import { VerifyTokenMiddleware } from './common/middlewares/verifyToken.middleware';
+import { TokenModule } from './modules/token.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { VerifyTokenMiddleware } from './common/middlewares/verifyToken.middlewa
     // TokenModule,
     AuthModule,
     ExpenseRecordModule,
+    TokenModule,
   ],
   controllers: [],
   providers: [],
