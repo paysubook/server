@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TestModule } from './modules/test.module';
 import { JwtModule } from '@nestjs/jwt';
 // import { TokenModule } from './modules/token.module';
 import { AuthModule } from './modules/auth.module';
+import { ExpenseRecordModule } from './modules/expenseRecord.module';
+import { VerifyTokenMiddleware } from './common/middlewares/verifyToken.middleware';
 
 @Module({
   imports: [
@@ -17,8 +19,13 @@ import { AuthModule } from './modules/auth.module';
     TestModule,
     // TokenModule,
     AuthModule,
+    ExpenseRecordModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(VerifyTokenMiddleware).forRoutes('expense-record');
+  }
+}
