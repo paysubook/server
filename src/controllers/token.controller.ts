@@ -9,6 +9,6 @@ export class TokenController {
   async refreshToken(@Res() res) {
     const result = await this.tokenService.refreshToken(res.locals.email);
 
-    return res.status(result.statusCode).json({ data: result.data });
+    return res.status(result.statusCode).json(result.data);
   }
 }
