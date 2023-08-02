@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request, Response, NextFunction } from 'express';
 
 interface TokenInterface {
-  email: string;
+  userId: string;
   type: string;
   iat: number;
   exp: number;
@@ -20,7 +20,7 @@ export class VerifyTokenMiddleware implements NestMiddleware {
     } else {
       try {
         const data = this.jwtService.verify(req.headers.authorization);
-        res.locals.email = data.email;
+        res.locals.userId = data.userId;
         next();
       } catch (error) {
         if (error.message === 'jwt expired') {

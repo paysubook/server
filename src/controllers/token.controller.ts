@@ -7,7 +7,8 @@ export class TokenController {
 
   @Post('refresh-token')
   async refreshToken(@Res() res) {
-    const result = await this.tokenService.refreshToken(res.locals.email);
+    const userId = res.locals.userId;
+    const result = await this.tokenService.refreshToken(userId);
 
     return res.status(result.statusCode).json(result.data);
   }

@@ -15,12 +15,12 @@ export class ExpenseRecordService {
   ) {}
 
   async createExpenseRecord(
-    email: string,
+    userId: string,
     expenseRecordBody: ExpenseRecordBody,
   ) {
     try {
       const createExpenseRecordQuery = new this.expenseRecordModel({
-        userId: email,
+        userId: userId,
         ...expenseRecordBody,
       });
       await createExpenseRecordQuery.save();

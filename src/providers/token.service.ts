@@ -5,19 +5,19 @@ import { JwtService } from '@nestjs/jwt';
 export class TokenService {
   constructor(private readonly jwtService: JwtService) {}
 
-  generateAccessToken(email: string): string {
-    const payload = { email, type: 'access' };
+  generateAccessToken(userId: string): string {
+    const payload = { userId, type: 'access' };
     return this.jwtService.sign(payload, { expiresIn: '5m' });
   }
 
-  generateRefreshToken(email: string): string {
-    const payload = { email, type: 'refresh' };
+  generateRefreshToken(userId: string): string {
+    const payload = { userId, type: 'refresh' };
     return this.jwtService.sign(payload, { expiresIn: '1d' });
   }
 
-  async refreshToken(email: string) {
+  async refreshToken(userId: string) {
     try {
-      const accessToken = this.generateAccessToken(email);
+      const accessToken = this.generateAccessToken(userId);
 
       return { statusCode: 200, data: { accessToken } };
     } catch (error) {

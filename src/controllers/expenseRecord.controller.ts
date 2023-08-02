@@ -7,9 +7,9 @@ export class ExpenseRecordController {
 
   @Post()
   async createExpenseRecord(@Res() res, @Body() expenseRecordBody) {
-    const email = res.locals.email;
+    const userId = res.locals.userId;
     const result = await this.expenseRecordService.createExpenseRecord(
-      email,
+      userId,
       expenseRecordBody,
     );
 
