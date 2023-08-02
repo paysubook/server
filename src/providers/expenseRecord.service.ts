@@ -34,4 +34,46 @@ export class ExpenseRecordService {
       );
     }
   }
+
+  async getExpenseRecordsWithinAMonth(userId: string, paymentMethod: string) {
+    try {
+      const oneMonthAgo = new Date();
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      const expenseRecordsWithinAMonth =
+        await this.expenseRecordModel.aggregate([
+          {
+            $match: {
+              userId,
+              paymentMethod,
+              type: 'expense',
+              createdAt: { $gte: oneMonthAgo },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: '$amount' },
+            },
+          },
+        ]);
+
+      if (!expenseRecordsWithinAMonth.length) {
+        return {
+          statusCode: 200,
+          data: { totalAmount: 0 },
+        };
+      }
+
+      return {
+        statusCode: 200,
+        data: { totalAmount: expenseRecordsWithinAMonth[0].totalAmount },
+      };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        '서버요청 실패.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
