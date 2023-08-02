@@ -17,7 +17,7 @@ export class ExpenseRecordController {
     return res.status(result.statusCode).json(result.data);
   }
 
-  @Get()
+  @Get('within-a-month')
   async getExpenseRecordsWithinAMonth(
     @Res() res,
     @Query('paymentMethod') paymentMethod: string,
