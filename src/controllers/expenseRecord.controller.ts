@@ -30,4 +30,13 @@ export class ExpenseRecordController {
 
     return res.status(result.statusCode).json(result.data);
   }
+
+  @Get('comparison')
+  async getExpenseComparisonThisMonth(@Res() res) {
+    const userId = res.locals.userId;
+    const result =
+      await this.expenseRecordService.getExpenseComparisonThisMonth(userId);
+
+    return res.status(result.statusCode).json(result.data);
+  }
 }
