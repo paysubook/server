@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
-import { type } from 'os';
 import { ExpenseRecordService } from 'src/providers/expenseRecord.service';
 
 @Controller('expense-record')
