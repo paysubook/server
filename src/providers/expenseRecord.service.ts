@@ -152,4 +152,67 @@ export class ExpenseRecordService {
       );
     }
   }
+
+  formatExpenseRecords(expenseRecords) {
+    if (expenseRecords.length === 0) {
+      return expenseRecords;
+    }
+
+    return expenseRecords.reduce((res, expenseRecord) => {
+      if (!res[`${dayjs(expenseRecord.createdAt).date()}일`]) {
+        res[`${dayjs(expenseRecord.createdAt).date()}일`] = [];
+      }
+      res[`${dayjs(expenseRecord.createdAt).date()}일`].push({
+        id: expenseRecord._id,
+        category: expenseRecord.category,
+        description: expenseRecord.description,
+        paymentMethod: expenseRecord.paymentMethod,
+        amount: `${
+          expenseRecord.type === 'income' ? '' : '-'
+        }${expenseRecord.amount.toLocaleString()}`,
+      });
+
+      return res;
+    }, {});
+  }
+
+  async getExpenseRecord({ userId, type = null, category = null }) {
+    try {
+      const currentDate = dayjs();
+      const thisMonth = currentDate.month();
+      const currentYear = currentDate.year();
+
+      const firstDayOfThisMonth = this.getFirstDayOfMonth(
+        currentYear,
+        thisMonth,
+      );
+      const lastDayOfThisMonth = this.getLastDayOfMonth(currentYear, thisMonth);
+
+      const expenseRecords = await this.expenseRecordModel
+        .aggregate([
+          {
+            $match: {
+              userId,
+              createdAt: {
+                $gte: firstDayOfThisMonth,
+                $lte: lastDayOfThisMonth,
+              },
+              ...(!!type && { type }),
+              ...(!!category && { category }),
+            },
+          },
+        ])
+        .exec();
+
+      const result = this.formatExpenseRecords(expenseRecords);
+
+      return { statusCode: 200, data: { expenseRecordList: result } };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        '서버요청 실패.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

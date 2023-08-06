@@ -5,6 +5,22 @@ import { ExpenseRecordService } from 'src/providers/expenseRecord.service';
 export class ExpenseRecordController {
   constructor(private expenseRecordService: ExpenseRecordService) {}
 
+  @Get()
+  async getExpenseRecord(
+    @Res() res,
+    @Query('type') type: string,
+    @Query('category') category: string,
+  ) {
+    const userId = res.locals.userId;
+    const result = await this.expenseRecordService.getExpenseRecord({
+      userId,
+      type,
+      category,
+    });
+
+    return res.status(result.statusCode).json(result.data);
+  }
+
   @Post()
   async createExpenseRecord(@Res() res, @Body() expenseRecordBody) {
     const userId = res.locals.userId;
