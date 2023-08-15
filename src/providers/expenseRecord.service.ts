@@ -153,6 +153,59 @@ export class ExpenseRecordService {
     }
   }
 
+  async getMonthlyCategoryExpenses(userId: string, month: string) {
+    try {
+      const currentDate = dayjs();
+      const currentYear = currentDate.year();
+
+      const firstDayOfThisMonth = this.getFirstDayOfMonth(
+        currentYear,
+        Number(month),
+      );
+      const lastDayOfThisMonth = this.getLastDayOfMonth(
+        currentYear,
+        Number(month),
+      );
+
+      const monthlyCategoryExpenses = await this.expenseRecordModel
+        .aggregate([
+          {
+            $match: {
+              userId,
+              createdAt: {
+                $gte: firstDayOfThisMonth,
+                $lte: lastDayOfThisMonth,
+              },
+            },
+          },
+          {
+            $group: {
+              _id: '$category',
+              total: { $sum: '$amount' },
+            },
+          },
+        ])
+        .exec();
+
+      const result = monthlyCategoryExpenses
+        .map((res) => {
+          return {
+            category: res._id,
+            total: res.total,
+          };
+        })
+        .sort((a, b) => b.total - a.total);
+
+      return { statusCode: 200, data: { monthlyCategoryExpenses: result } };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        '서버요청 실패.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   formatExpenseRecords(expenseRecords) {
     if (expenseRecords.length === 0) {
       return expenseRecords;

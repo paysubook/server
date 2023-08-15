@@ -21,6 +21,17 @@ export class ExpenseRecordController {
     return res.status(result.statusCode).json(result.data);
   }
 
+  @Get('category-sums')
+  async getMonthlyCategoryExpenses(@Res() res, @Query('month') month: string) {
+    const userId = res.locals.userId;
+    const result = await this.expenseRecordService.getMonthlyCategoryExpenses(
+      userId,
+      month,
+    );
+
+    return res.status(result.statusCode).json(result.data);
+  }
+
   @Post()
   async createExpenseRecord(@Res() res, @Body() expenseRecordBody) {
     const userId = res.locals.userId;
